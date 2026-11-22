@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>erekengo — AI чат</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+  <div class="head">
+    <div class="ava">e</div>
+    <div>
+      <h1>erekengo</h1>
+      <div class="sub">AI agent · скриншот → ответ</div>
+    </div>
+    <div class="live" id="live"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tab-chat" data-tab="chat">💬 Чат</button>
+    <button class="tab" id="tab-video" data-tab="video">🎬 Видео Coursera</button>
+    <button class="tab" id="tab-actions" data-tab="actions">⚡ Действия</button>
+    <button class="tab" id="tab-settings" data-tab="settings">⚙️ Настройки</button>
+  </div>
+
+  <div class="strip">
+    <div class="st"><b id="stat-msg">0</b><span>сообщений</span></div>
+    <div class="st"><b id="stat-shot">0</b><span>скриншотов</span></div>
+    <div class="st"><b id="stat-vid">0</b><span>видео</span></div>
+  </div>
+
+  <section class="panel on" id="panel-chat">
+    <div class="chat" id="chat-log"></div>
+    <div class="typing" id="typing">erekengo печатает…</div>
+    <div class="composer">
+      <div class="chips" id="chips"></div>
+      <div class="row">
+        <button class="ib" id="btn-shot" title="Снять экран и отправить">📸</button>
+        <button class="ib" id="btn-upload" title="Загрузить скриншот из файла">🖼</button>
+        <input type="file" id="file-input" accept="image/*" hidden>
+        <textarea id="msg-input" placeholder="напиши сообщение…  Enter — отправить"></textarea>
+        <button class="ib primary" id="btn-send" title="Отправить">➤</button>
+      </div>
+      <div class="btnrow">
+        <button class="mini" id="btn-regen">↻ перегенерировать</button>
+        <button class="mini" id="btn-export">⇩ экспорт</button>
+        <button class="mini" id="btn-clear">✕ очистить</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-video">
+    <div class="list" id="video-list"></div>
+    <div class="box">
+      <div class="inrow">
+        <input id="video-url" placeholder="ссылка на лекцию Coursera">
+        <button class="btn" id="btn-video-add">Добавить</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="btn-video-start">▶ Досмотреть лекцию</button>
+        <button class="btn ghost" id="btn-video-stop">Стоп</button>
+        <button class="btn ghost" id="btn-video-clear">Очистить</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="video-auto" checked> отмечать видеолекции Coursera как пройденные</label>
+      <label class="chk">скорость
+        <select id="video-speed" style="width:86px">
+          <option>4</option><option>8</option><option selected>16</option><option>32</option>
+        </select>
+        <input type="checkbox" id="video-mute" checked> без звука
+      </label>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-actions">
+    <div class="list" id="act-log">
+      <div class="empty">отдельные кнопки для страницы Coursera:<br>ответы ставятся прямо в поля теста, видео ускоряется и досматривается</div>
+    </div>
+    <div class="box">
+      <div class="erk-q-row">
+        <button id="act-fill">✓ Расставить ответы</button>
+        <button id="act-video">▶ Пропустить видео</button>
+      </div>
+      <div class="erk-q-status" id="act-status">готово к работе</div>
+      <div class="note" style="margin-top:10px;">кнопки дублируют плавающую панель прямо на странице курса — можно нажимать и там, и здесь</div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-settings">
+    <div class="form">
+      <div class="f">
+        <label>Ключи API — авто-переключение при лимите</label>
+        <div id="keys-list"></div>
+        <div class="inrow" style="margin-top:8px">
+          <input id="key-label" placeholder="Название (например Gemini 2)">
+          <input id="key-input" type="password" placeholder="вставь ключ">
+        </div>
+        <div class="btnrow">
+          <button class="btn" id="btn-key-add">+ Добавить ключ</button>
+          <button class="btn ghost" id="btn-keys-test">Проверить все</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="failover" checked> если у ключа кончился лимит — автоматически брать следующий</label>
+        <div class="hint" id="keys-hint"></div>
+      </div>
+      <div class="f">
+        <label>Провайдер</label>
+        <select id="set-provider">
+          <option value="openai">OpenAI</option>
+          <option value="openrouter">OpenRouter</option>
+          <option value="gemini">Google Gemini</option>
+          <option value="groq">Groq</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="together">Together AI</option>
+          <option value="mistral">Mistral</option>
+          <option value="custom">Свой API</option>
+        </select>
+        <div class="hint">выбор подставляет нужный URL и модель — их можно править вручную</div>
+      </div>
+      <div class="f">
+        <label>API ключ</label>
+        <input type="password" id="set-key" placeholder="sk-... / AIza... / AQ...">
+        <div class="hint">нужен для чата и для разбора скриншотов</div>
+      </div>
+      <div class="f">
+        <label>Модель с поддержкой изображений</label>
+        <input type="text" id="set-model" value="gpt-4o-mini">
+      </div>
+      <div class="f">
+        <label>URL API</label>
+        <input type="text" id="set-url" value="https://api.openai.com/v1/chat/completions">
+      </div>
+      <div class="f">
+        <label>Стиль ответа</label>
+        <select id="set-persona">
+          <option value="short">кратко и ясно</option>
+          <option value="expert">как эксперт</option>
+          <option value="code">программист</option>
+          <option value="translate">переводчик</option>
+          <option value="custom">свой промпт</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Системный промпт</label>
+        <textarea class="big" id="set-prompt" placeholder="Отвечай кратко и ясно. Без воды."></textarea>
+      </div>
+      <div class="f">
+        <label>Максимум токенов в ответе</label>
+        <input type="number" id="set-tokens" value="600">
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="btn-detect">Определить провайдера</button>
+        <button class="btn ghost" id="btn-test">Проверить ключ</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn ghost" id="btn-save">Сохранить</button>
+        <button class="btn ghost" id="btn-diag">Диагностика</button>
+      </div>
+      <div class="note">ключ <b>AQ.…</b> — это новый формат Google Gemini: он определится сам. скопируй полный ключ из карточки ключа (в списке он показан урезанным). если формат неизвестен — нажми «Определить провайдера».</div>
+      <div class="note" id="diag-out" style="white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10px;line-height:1.5"></div>
+      <div class="note" id="set-msg"></div>
+      <div class="note" style="margin-top:14px;">
+        на телефоне открой эту страницу как обычный сайт: кнопка 📸 предложит выбрать скриншот из галереи,
+        а 🖼 — загрузить изображение. В веб-режиме авто-просмотр работает только на текущей странице.
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">created by <b>Yernat Bakytnur</b></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

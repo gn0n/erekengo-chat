@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>erekengo chat</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,-apple-system,"Segoe UI",sans-serif;width:260px;
+      background:radial-gradient(130% 120% at 0% 0%,#1d1740,#0a0b14 62%);color:#eef0ff;padding:16px}
+    .h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .a{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;
+      color:#0a0b14;background:linear-gradient(135deg,#a78bfa,#38bdf8)}
+    .h b{font-size:14px}.h span{display:block;font-size:9px;color:#939bc0;text-transform:uppercase;letter-spacing:.8px}
+    .btn{width:100%;padding:11px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;
+      color:#0a0b14;background:linear-gradient(135deg,#a78bfa,#38bdf8)}
+    .btn:hover{filter:brightness(1.1)}
+    .hint{font-size:10.5px;color:#939bc0;line-height:1.5;margin-top:12px;text-align:center}
+    .foot{text-align:center;font-size:9px;letter-spacing:.7px;text-transform:uppercase;color:#6f77a0;margin-top:12px}
+    .foot b{color:#a78bfa}
+  </style>
+</head>
+<body>
+  <div class="h">
+    <div class="a">e</div>
+    <div><b>erekengo</b><span>AI agent chat</span></div>
+  </div>
+  <button class="btn" id="btn-open">Открыть чат →</button>
+  <div class="hint">📸 скриншот → краткий ответ · 🎬 категория видео</div>
+  <div class="foot">created by <b>Yernat Bakytnur</b></div>
+  <script src="popup.js"></script>
+</body>
+</html>

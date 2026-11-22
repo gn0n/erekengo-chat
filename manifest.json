@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "erekengo — AI Agent Chat",
+  "short_name": "erekengo chat",
+  "version": "1.0.0",
+  "description": "AI-чат-агент: скриншот → краткий ответ, категория просмотра видео, работа с API-ключами. created by Yernat Bakytnur",
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "sidePanel"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.coursera.org/*"],
+      "js": ["quizbrain.js", "video.js", "quiz.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "erekengo — открыть чат"
+  },
+  "options_ui": {
+    "page": "standalone.html",
+    "open_in_tab": true
+  },
+  "icons": {}
+}
